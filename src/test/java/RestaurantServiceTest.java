@@ -84,4 +84,85 @@ class RestaurantServiceTest {
         assertEquals(initialNumberOfRestaurants + 1,service.getRestaurants().size());
     }
     //<<<<<<<<<<<<<<<<<<<<ADMIN: ADDING & REMOVING RESTAURANTS>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    //<Sabaji><04/04/2021><Part 3: Failing test case> TDD Test Cases for calculating item subtotal
+    //<<<<<<<<<<<<<<<<<<<<SUBTOTAL>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    //Assumption: User has received the list of items from the menu in the UI using Restaurant.getMenu() method
+    // User selects the list of items from the grid using checkbox
+    // 1. Selecting a checkbox should dynamically update the subTotal of the items in the cart
+    // 2. Unchecking the chekbox should reduce the price of item in the cart
+    // 3. Calculate sub total when the list selected of items is given by the user (in case of recalculation)
+    // 3. Initially the subTotal should be zero
+
+    @Test
+    public void initialize_the_Cart_with_zero_subTotal(){
+        //<Sabaji><04/04/2021><Part 3: Failing test case>
+        //Arrange
+        RestaurantService restaurantService = new RestaurantService();
+        Restaurant selectedRestaurantTest = new Restaurant();
+        initialize_test_case_Data_With_Amelie_Restaurant();
+        initialize_restaurant_menu_for_a_restaurant();
+
+        //Act -
+        selectedRestaurantTest = restaurantService.findRestaurantByName("Amelie's cafe");
+
+        //Assert
+        assertEquals(0, selectedRestaurantTest.getSubTotal());
+
+    }
+    @Test
+    public void when_user_selects_a_Singleitem_the_cart_total_should_increment_by_the_item_price_in_the_list(){
+        //<Sabaji><04/04/2021><Part 3: Failing test case>
+        //Arrange
+        initialize_test_case_Data_With_Amelie_Restaurant();
+        initialize_restaurant_menu_for_a_restaurant();
+        Item testItem = new Item("Sweet corn soup", 119);
+
+        RestaurantService restaurantService = new RestaurantService();
+        Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
+        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
+
+        //Act
+        restaurantService.getSelectedIemPriceTotal(testItem, "ADD");
+        //Assert - upon adding the item, the total should increase by 119
+        assertEquals(319, restaurantService.getSubTotal());
+    }
+
+    public void when_user_unchecks_an_item_the_cart_total_should_increment_by_the_item_price_in_the_list(){
+        //<Sabaji><04/04/2021><Part 3: Failing test case>
+        //Arrange
+        initialize_test_case_Data_With_Amelie_Restaurant();
+        initialize_restaurant_menu_for_a_restaurant();
+        Item testItem = new Item("Sweet corn soup", 119);
+
+        RestaurantService restaurantService = new RestaurantService();
+        Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
+        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
+        //Act
+        restaurantService.getSelectedIemPriceTotal(testItem, "REMOVE");
+        //Assert - upon unchecking the item (remove action), the cart total should reduce to 81
+        assertEquals(81, restaurantService.getSubTotal());
+    }
+
+    public void when_user_provides_all_selected_item_list_of_the_cart_it_should_calculate_total_amount(){
+        //<Sabaji><04/04/2021><Part 3: Failing test case>
+        //Arrange
+        initialize_test_case_Data_With_Amelie_Restaurant();
+        initialize_restaurant_menu_for_a_restaurant();
+        List<Item> selectedItemList = new ArrayList<>();
+        selectedItemList.add(new Item("Vegetable lasagne", 269));
+        selectedItemList.add(new Item("Sweet corn soup", 119));
+
+        RestaurantService restaurantService = new RestaurantService();
+        Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
+        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
+        //Act
+        restaurantService.getSelectedIemPriceTotal(selectedItemList);
+        //Assert - upon unchecking the item (remove action), the cart total should reduce to 81
+        assertEquals(288, restaurantService.getSubTotal());
+
+    }
+
+    //<<<<<<<<<<<<<<<<<<<<SUBTOTAL>>>>>>>>>>>>>>>>>>>>>>>>>>
 }
