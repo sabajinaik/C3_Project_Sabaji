@@ -11,6 +11,10 @@ public class Restaurant {
     public LocalTime closingTime;
     private List<Item> menu = new ArrayList<Item>();
 
+    //<Sabaji><04/04/2021><Part 3: Solution>
+    public Restaurant(){
+     //default constructor to instantiate an object
+    }
     public Restaurant(String name, String location, LocalTime openingTime, LocalTime closingTime) {
         this.name = name;
         this.location = location;

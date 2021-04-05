@@ -17,4 +17,8 @@ public class Item {
                 + "\n"
                 ;
     }
+    //<Sabaji><04/04/2021><Part 3: Solution>
+    public int getPrice(){
+        return this.price;
+    }
 }

@@ -1,10 +1,16 @@
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@ExtendWith(MockitoExtension.class)
 class RestaurantServiceTest {
 
     RestaurantService service = new RestaurantService();
@@ -32,7 +38,6 @@ class RestaurantServiceTest {
         Restaurant resultRestaurantTest = service.findRestaurantByName(lookupRestaurantName);
         //Assert
         assertEquals(lookupRestaurantName, resultRestaurantTest.getName());
-
     }
 
     //You may watch the video by Muthukumaran on how to write exceptions in Course 3: Testing and Version control: Optional content
@@ -96,7 +101,7 @@ class RestaurantServiceTest {
     // 3. Initially the subTotal should be zero
 
     @Test
-    public void initialize_the_Cart_with_zero_subTotal(){
+    public void initialize_the_Cart_with_zero_subTotal() throws restaurantNotFoundException {
         //<Sabaji><04/04/2021><Part 3: Failing test case>
         //Arrange
         RestaurantService restaurantService = new RestaurantService();
@@ -108,11 +113,11 @@ class RestaurantServiceTest {
         selectedRestaurantTest = restaurantService.findRestaurantByName("Amelie's cafe");
 
         //Assert
-        assertEquals(0, selectedRestaurantTest.getSubTotal());
-
+        assertEquals(0, restaurantService.getsubTotalForSelectedRestaurantItems());
     }
+
     @Test
-    public void when_user_selects_a_Singleitem_the_cart_total_should_increment_by_the_item_price_in_the_list(){
+    public void when_user_selects_a_Singleitem_the_cart_total_should_increment_by_the_item_price_in_the_list() throws restaurantNotFoundException{
         //<Sabaji><04/04/2021><Part 3: Failing test case>
         //Arrange
         initialize_test_case_Data_With_Amelie_Restaurant();
@@ -121,15 +126,15 @@ class RestaurantServiceTest {
 
         RestaurantService restaurantService = new RestaurantService();
         Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
-        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
-
+        restaurantService.setSubTotalForSelectedRestaurantItems(200);
         //Act
-        restaurantService.getSelectedIemPriceTotal(testItem, "ADD");
+        restaurantService.getSelectedItemPriceTotal(testItem, "ADD");
         //Assert - upon adding the item, the total should increase by 119
-        assertEquals(319, restaurantService.getSubTotal());
+        assertEquals(319, restaurantService.getsubTotalForSelectedRestaurantItems());
     }
 
-    public void when_user_unchecks_an_item_the_cart_total_should_increment_by_the_item_price_in_the_list(){
+    @Test
+    public void when_user_unchecks_an_item_the_cart_total_should_increment_by_the_item_price_in_the_list() throws restaurantNotFoundException{
         //<Sabaji><04/04/2021><Part 3: Failing test case>
         //Arrange
         initialize_test_case_Data_With_Amelie_Restaurant();
@@ -138,14 +143,16 @@ class RestaurantServiceTest {
 
         RestaurantService restaurantService = new RestaurantService();
         Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
-        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
+        restaurantService.setSubTotalForSelectedRestaurantItems(200);
+
         //Act
-        restaurantService.getSelectedIemPriceTotal(testItem, "REMOVE");
+        restaurantService.getSelectedItemPriceTotal(testItem, "REMOVE");
         //Assert - upon unchecking the item (remove action), the cart total should reduce to 81
-        assertEquals(81, restaurantService.getSubTotal());
+        assertEquals(81, restaurantService.getsubTotalForSelectedRestaurantItems());
     }
 
-    public void when_user_provides_all_selected_item_list_of_the_cart_it_should_calculate_total_amount(){
+    @Test
+    public void when_user_provides_all_selected_item_list_of_the_cart_it_should_calculate_total_amount() throws restaurantNotFoundException{
         //<Sabaji><04/04/2021><Part 3: Failing test case>
         //Arrange
         initialize_test_case_Data_With_Amelie_Restaurant();
@@ -156,13 +163,11 @@ class RestaurantServiceTest {
 
         RestaurantService restaurantService = new RestaurantService();
         Restaurant selectedRestaurant = restaurantService.findRestaurantByName("Amelie's cafe");
-        Mockito.when(selectedRestaurant.getSubTotal()).thenReturn(200);
         //Act
-        restaurantService.getSelectedIemPriceTotal(selectedItemList);
+        restaurantService.getSelectedItemPriceTotal(selectedItemList);
         //Assert - upon unchecking the item (remove action), the cart total should reduce to 81
-        assertEquals(288, restaurantService.getSubTotal());
+        assertEquals(388, restaurantService.getsubTotalForSelectedRestaurantItems());
 
     }
-
     //<<<<<<<<<<<<<<<<<<<<SUBTOTAL>>>>>>>>>>>>>>>>>>>>>>>>>>
 }
